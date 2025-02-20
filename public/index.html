@@ -1,24 +1,106 @@
-<script>
-    const results = document.getElementById('results');
-  
-    document.getElementById('getAllSongs').addEventListener('click', async () => {
-      const res = await fetch('/api/songs');
-      const data = await res.json();
-      results.textContent = JSON.stringify(data, null, 2);
-    });
-  
-    document.getElementById('getSongById').addEventListener('click', async () => {
-      const songId = prompt('Enter Song ID:');
-      const res = await fetch(`/api/songs/${songId}`);
-      const data = await res.json();
-      results.textContent = JSON.stringify(data, null, 2);
-    });
-  
-    document.getElementById('getSongsByArtist').addEventListener('click', async () => {
-      const artistName = prompt('Enter Artist Name:');
-      const res = await fetch(`/api/songs/artist/${artistName}`);
-      const data = await res.json();
-      results.textContent = JSON.stringify(data, null, 2);
-    });
-  </script>
-  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Songs API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #results {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            min-height: 200px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow: auto;
+        }
+        #error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Songs API</h1>
+    <p>Use the buttons below to fetch data from the songs API:</p>
+    
+    <div class="button-container">
+        <button id="getAllSongs">Get All Songs</button>
+        <button id="getSongById">Get Song By ID</button>
+        <button id="getSongsByArtist">Get Songs By Artist</button>
+    </div>
+    
+    <h2>Results:</h2>
+    <pre id="results"></pre>
+    <div id="error"></div>
+    
+    <script>
+        const results = document.getElementById('results');
+        const errorDiv = document.getElementById('error');
+
+        async function handleFetch(fetchPromise) {
+            try {
+                errorDiv.textContent = ''; // Clear previous errors
+                results.textContent = 'Loading...';
+                
+                const res = await fetchPromise;
+                
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                
+                const data = await res.json();
+                results.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                errorDiv.textContent = `Error: ${error.message}`;
+                results.textContent = '';
+            }
+        }
+
+        document.getElementById('getAllSongs').addEventListener('click', () => {
+            handleFetch(fetch('/api/songs'));
+        });
+
+        document.getElementById('getSongById').addEventListener('click', () => {
+            const songId = prompt('Enter Song ID:');
+            if (songId) {
+                handleFetch(fetch(`/api/songs/${songId}`));
+            }
+        });
+
+        document.getElementById('getSongsByArtist').addEventListener('click', () => {
+            const artistName = prompt('Enter Artist Name:');
+            if (artistName) {
+                handleFetch(fetch(`/api/songs/artist/${encodeURIComponent(artistName)}`));
+            }
+        });
+    </script>
+</body>
+</html>
