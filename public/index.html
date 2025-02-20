@@ -1,0 +1,24 @@
+<script>
+    const results = document.getElementById('results');
+  
+    document.getElementById('getAllSongs').addEventListener('click', async () => {
+      const res = await fetch('/api/songs');
+      const data = await res.json();
+      results.textContent = JSON.stringify(data, null, 2);
+    });
+  
+    document.getElementById('getSongById').addEventListener('click', async () => {
+      const songId = prompt('Enter Song ID:');
+      const res = await fetch(`/api/songs/${songId}`);
+      const data = await res.json();
+      results.textContent = JSON.stringify(data, null, 2);
+    });
+  
+    document.getElementById('getSongsByArtist').addEventListener('click', async () => {
+      const artistName = prompt('Enter Artist Name:');
+      const res = await fetch(`/api/songs/artist/${artistName}`);
+      const data = await res.json();
+      results.textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+  
