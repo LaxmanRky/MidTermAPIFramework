@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const connectDB = require('./config/db');
-const songRoutes = require('./routes/songRoutes');
+const songRoutes = require('./routes/controllers/songRoutes');
 const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
